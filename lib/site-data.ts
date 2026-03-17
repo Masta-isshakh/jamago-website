@@ -46,6 +46,7 @@ export const navLabels: Record<
   {
     services: string;
     products: string;
+    warranty: string;
     moi: string;
     industries: string;
     projects: string;
@@ -56,6 +57,7 @@ export const navLabels: Record<
   en: {
     services: "Services",
     products: "Products",
+    warranty: "Warranty Program",
     moi: "MOI Approval",
     industries: "Industries",
     projects: "Projects",
@@ -65,6 +67,7 @@ export const navLabels: Record<
   ar: {
     services: "الخدمات",
     products: "المنتجات",
+    warranty: "برنامج الضمان",
     moi: "اعتماد MOI",
     industries: "القطاعات",
     projects: "المشاريع",

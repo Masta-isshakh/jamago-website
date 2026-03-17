@@ -49,6 +49,7 @@ export function SiteShell({ locale, children }: SiteShellProps) {
             <Link href={withLocale(locale)}>{locale === "ar" ? "الرئيسية" : "Home"}</Link>
             <Link href={withLocale(locale, "/services")}>{nav.services}</Link>
             <Link href={withLocale(locale, "/products")}>{nav.products}</Link>
+            <Link href={withLocale(locale, "/warranty-program")}>{nav.warranty}</Link>
             <Link href={withLocale(locale, "/moi-approval")}>{nav.moi}</Link>
             <Link href={withLocale(locale, "/industries")}>{nav.industries}</Link>
             <Link href={withLocale(locale, "/projects")}>{nav.projects}</Link>
