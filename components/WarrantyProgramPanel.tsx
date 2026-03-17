@@ -295,7 +295,7 @@ export function WarrantyProgramPanel({ locale }: WarrantyProgramPanelProps) {
           status: "NEW",
           emailDeliveryStatus: "PENDING",
         },
-        { authorizationMode: "apiKey" } as any,
+        { authMode: "apiKey" } as any,
       );
 
       await client.models.WarrantyCard.create(
@@ -310,7 +310,7 @@ export function WarrantyProgramPanel({ locale }: WarrantyProgramPanelProps) {
           emailDeliveryStatus: "PENDING",
           lastStatusCheckAt: new Date().toISOString(),
         },
-        { authorizationMode: "apiKey" } as any,
+        { authMode: "apiKey" } as any,
       );
 
       setCreatedWarrantyId(warrantyId);
@@ -357,7 +357,7 @@ export function WarrantyProgramPanel({ locale }: WarrantyProgramPanelProps) {
           },
           limit: 1,
         },
-        { authorizationMode: "apiKey" } as any,
+        { authMode: "apiKey" } as any,
       );
 
       if (!data.length) {
@@ -376,7 +376,7 @@ export function WarrantyProgramPanel({ locale }: WarrantyProgramPanelProps) {
               status: normalizedStatus,
               lastStatusCheckAt: new Date().toISOString(),
             },
-            isAdmin ? undefined : ({ authorizationMode: "apiKey" } as any),
+            isAdmin ? undefined : ({ authMode: "apiKey" } as any),
           );
           card.status = normalizedStatus;
         } catch {

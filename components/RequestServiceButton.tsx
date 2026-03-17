@@ -128,7 +128,7 @@ export function RequestServiceButton({ locale, serviceSlug, serviceName }: Reque
           status: "NEW",
         },
         {
-          authorizationMode: "apiKey",
+          authMode: "apiKey",
         } as any
       );
 
