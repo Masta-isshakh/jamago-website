@@ -9,12 +9,21 @@ import { withLocale } from "@/lib/i18n";
 
 type AdminRequestsNavLinkProps = {
   locale: Locale;
+  className?: string;
+  activeClassName?: string;
+  currentPath?: string;
 };
 
-export function AdminRequestsNavLink({ locale }: AdminRequestsNavLinkProps) {
+export function AdminRequestsNavLink({
+  locale,
+  className,
+  activeClassName,
+  currentPath,
+}: AdminRequestsNavLinkProps) {
   const client = useMemo(() => generateClient<any>(), []);
   const [isAdmin, setIsAdmin] = useState(false);
   const [newCount, setNewCount] = useState(0);
+  const requestsHref = withLocale(locale, "/requests");
 
   useEffect(() => {
     let mounted = true;
@@ -56,8 +65,12 @@ export function AdminRequestsNavLink({ locale }: AdminRequestsNavLinkProps) {
     return null;
   }
 
+  const combinedClassName = [className, currentPath === requestsHref ? activeClassName : undefined]
+    .filter(Boolean)
+    .join(" ");
+
   return (
-    <Link href={withLocale(locale, "/requests")} className="admin-requests-link">
+    <Link href={requestsHref} className={combinedClassName || "admin-requests-link"}>
       Requests{newCount > 0 ? ` (${newCount})` : ""}
     </Link>
   );

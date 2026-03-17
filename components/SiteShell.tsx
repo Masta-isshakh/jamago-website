@@ -1,5 +1,8 @@
+"use client";
+
 import Link from "next/link";
-import type { ReactNode } from "react";
+import { useEffect, useMemo, useState, type ReactNode } from "react";
+import { usePathname } from "next/navigation";
 import { AdminRequestsNavLink } from "@/components/AdminRequestsNavLink";
 import { HiddenLoginEntry } from "@/components/HiddenLoginEntry";
 import { localeLabel, withLocale } from "@/lib/i18n";
@@ -14,6 +17,46 @@ type SiteShellProps = {
 export function SiteShell({ locale, children }: SiteShellProps) {
   const nav = navLabels[locale];
   const altLocale: Locale = locale === "en" ? "ar" : "en";
+  const pathname = usePathname();
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  const navItems = useMemo(
+    () => [
+      { href: withLocale(locale), label: locale === "ar" ? "الرئيسية" : "Home" },
+      { href: withLocale(locale, "/services"), label: nav.services },
+      { href: withLocale(locale, "/products"), label: nav.products },
+      { href: withLocale(locale, "/warranty-program"), label: nav.warranty },
+      { href: withLocale(locale, "/moi-approval"), label: nav.moi },
+      { href: withLocale(locale, "/industries"), label: nav.industries },
+      { href: withLocale(locale, "/projects"), label: nav.projects },
+      { href: withLocale(locale, "/blog"), label: nav.blog },
+    ],
+    [locale, nav.blog, nav.industries, nav.moi, nav.products, nav.projects, nav.services, nav.warranty],
+  );
+
+  // Close menu on route change and lock body scroll while open
+  useEffect(() => {
+    setMobileMenuOpen(false);
+  }, [pathname]);
+
+  useEffect(() => {
+    if (mobileMenuOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [mobileMenuOpen]);
+
+  const getNavLinkClassName = (href: string) => {
+    const classes = ["site-nav-link"];
+    if (pathname === href) {
+      classes.push("is-active");
+    }
+    return classes.join(" ");
+  };
 
   return (
     <div className={`site-shell ${locale}`} dir={locale === "ar" ? "rtl" : "ltr"}>
@@ -46,23 +89,134 @@ export function SiteShell({ locale, children }: SiteShellProps) {
           </Link>
 
           <nav aria-label="Primary navigation">
-            <Link href={withLocale(locale)}>{locale === "ar" ? "الرئيسية" : "Home"}</Link>
-            <Link href={withLocale(locale, "/services")}>{nav.services}</Link>
-            <Link href={withLocale(locale, "/products")}>{nav.products}</Link>
-            <Link href={withLocale(locale, "/warranty-program")}>{nav.warranty}</Link>
-            <Link href={withLocale(locale, "/moi-approval")}>{nav.moi}</Link>
-            <Link href={withLocale(locale, "/industries")}>{nav.industries}</Link>
-            <Link href={withLocale(locale, "/projects")}>{nav.projects}</Link>
-            <Link href={withLocale(locale, "/blog")}>{nav.blog}</Link>
-            <AdminRequestsNavLink locale={locale} />
+            {navItems.map((item) => (
+              <Link key={item.href} href={item.href} className={getNavLinkClassName(item.href)}>
+                {item.label}
+              </Link>
+            ))}
+            <AdminRequestsNavLink
+              locale={locale}
+              className="site-nav-link admin-requests-link"
+              activeClassName="is-active"
+              currentPath={pathname}
+            />
           </nav>
 
-          <Link href={withLocale(altLocale)} className="locale-switch">
-            {localeLabel[altLocale]}
-          </Link>
-          <Link href={withLocale(locale, "/quote")} className="cta-link">
-            {nav.quote}
-          </Link>
+          <div className="desktop-nav-actions">
+            <Link href={withLocale(altLocale)} className="locale-switch">
+              {localeLabel[altLocale]}
+            </Link>
+            <Link href={withLocale(locale, "/quote")} className="cta-link">
+              {nav.quote}
+            </Link>
+          </div>
+
+          <div className="mobile-nav">
+            {/* Hamburger toggle */}
+            <button
+              type="button"
+              className="mobile-nav-toggle"
+              aria-label={locale === "ar" ? "فتح القائمة" : "Open menu"}
+              aria-expanded={mobileMenuOpen}
+              aria-controls="mobile-nav-drawer"
+              onClick={() => setMobileMenuOpen(true)}
+            >
+              <span className="mobile-nav-toggle-icon" aria-hidden="true">
+                <span />
+                <span />
+                <span />
+              </span>
+            </button>
+
+            {/* Backdrop */}
+            {mobileMenuOpen && (
+              <div
+                className="mobile-drawer-backdrop"
+                aria-hidden="true"
+                onClick={() => setMobileMenuOpen(false)}
+              />
+            )}
+
+            {/* Side drawer */}
+            <div
+              id="mobile-nav-drawer"
+              className={`mobile-drawer${mobileMenuOpen ? " is-open" : ""}`}
+              role="dialog"
+              aria-modal="true"
+              aria-label={locale === "ar" ? "قائمة التنقل" : "Navigation menu"}
+            >
+              <div className="mobile-drawer-header">
+                <Link href={withLocale(locale)} className="mobile-drawer-brand" onClick={() => setMobileMenuOpen(false)}>
+                  <span className="mobile-drawer-brand-mark">J</span>
+                </Link>
+                <button
+                  type="button"
+                  className="mobile-drawer-close"
+                  aria-label={locale === "ar" ? "إغلاق" : "Close"}
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  ✕
+                </button>
+              </div>
+
+              <div className="mobile-drawer-search-wrap">
+                <input
+                  className="mobile-drawer-search"
+                  type="text"
+                  placeholder={locale === "ar" ? "بحث" : "Search"}
+                  aria-label={locale === "ar" ? "بحث" : "Search"}
+                />
+              </div>
+
+              <nav className="mobile-drawer-nav" aria-label="Mobile navigation">
+                {navItems.map((item) => {
+                  const hasChildren =
+                    item.href === withLocale(locale, "/products") || item.href === withLocale(locale, "/services");
+                  return (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    className={`mobile-drawer-link${pathname === item.href ? " is-active" : ""}`}
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
+                    <span className="mobile-drawer-link-label">{item.label}</span>
+                    {hasChildren ? <span className="mobile-drawer-link-arrow" aria-hidden="true">⌄</span> : null}
+                  </Link>
+                );})}
+                <AdminRequestsNavLink
+                  locale={locale}
+                  className="mobile-drawer-link"
+                  activeClassName="is-active"
+                  currentPath={pathname}
+                />
+              </nav>
+
+              <div className="mobile-drawer-footer">
+                <Link
+                  href="tel:+97455551234"
+                  className="mobile-drawer-footer-link"
+                >
+                  <span className="mobile-drawer-footer-icon" aria-hidden="true">☎</span>
+                  <span>{locale === "ar" ? "اتصال" : "Contact"}</span>
+                </Link>
+                <Link
+                  href="mailto:info@jamago.qa"
+                  className="mobile-drawer-footer-link"
+                >
+                  <span className="mobile-drawer-footer-icon" aria-hidden="true">✉</span>
+                  <span>{locale === "ar" ? "البريد" : "Email"}</span>
+                </Link>
+                <Link
+                  href={withLocale(locale, "/blog")}
+                  className="mobile-drawer-footer-link"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  <span className="mobile-drawer-footer-icon" aria-hidden="true">?</span>
+                  <span>FAQ</span>
+                </Link>
+              </div>
+            </div>
+          </div>
         </div>
       </header>
 
