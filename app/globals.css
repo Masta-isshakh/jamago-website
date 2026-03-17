@@ -2426,6 +2426,27 @@ ol {
   background: #fff;
 }
 
+.warranty-action-group {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.warranty-resend-btn {
+  background: #e07b14;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 5px 10px;
+  font-size: 0.82rem;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.warranty-resend-btn:hover {
+  background: #c56b0e;
+}
+
 .warranty-admin-card h3 {
   color: #173864;
   margin-bottom: 0.55rem;

@@ -1,3 +1,4 @@
+import { DynamoDBClient, ScanCommand, UpdateItemCommand } from "@aws-sdk/client-dynamodb";
 import { SESv2Client, SendEmailCommand } from "@aws-sdk/client-sesv2";
 
 type WarrantyRequestImage = {
@@ -13,11 +14,64 @@ type WarrantyRequestImage = {
   warrantyMonths?: number;
   startDate?: string;
   endDate?: string;
-  status?: "NEW" | "REVIEWED" | "APPROVED" | "REJECTED" | "FULFILLED";
-  emailDeliveryStatus?: "PENDING" | "SENT" | "FAILED";
+  status?: string;
+  emailDeliveryStatus?: string;
+  resendEmail?: boolean;
 };
 
 const ses = new SESv2Client({ region: process.env.AWS_REGION });
+const ddb = new DynamoDBClient({ region: process.env.AWS_REGION });
+
+async function updateRequestEmailStatus(
+  id: string,
+  status: "SENT" | "FAILED",
+  clearResendFlag: boolean,
+): Promise<void> {
+  const table = process.env.WARRANTY_REQUEST_TABLE;
+  if (!table) return;
+
+  const exprValues: Record<string, any> = { ":status": { S: status } };
+  let updateExpr = "SET emailDeliveryStatus = :status";
+  if (clearResendFlag) {
+    updateExpr += ", resendEmail = :false";
+    exprValues[":false"] = { BOOL: false };
+  }
+
+  await ddb.send(
+    new UpdateItemCommand({
+      TableName: table,
+      Key: { id: { S: id } },
+      UpdateExpression: updateExpr,
+      ExpressionAttributeValues: exprValues,
+    }),
+  );
+}
+
+async function updateCardEmailStatus(warrantyId: string, status: "SENT" | "FAILED"): Promise<void> {
+  const table = process.env.WARRANTY_CARD_TABLE;
+  if (!table || !warrantyId) return;
+
+  const scan = await ddb.send(
+    new ScanCommand({
+      TableName: table,
+      FilterExpression: "warrantyId = :wid",
+      ExpressionAttributeValues: { ":wid": { S: warrantyId } },
+      Limit: 1,
+    }),
+  );
+
+  const cardId = scan.Items?.[0]?.id?.S;
+  if (!cardId) return;
+
+  await ddb.send(
+    new UpdateItemCommand({
+      TableName: table,
+      Key: { id: { S: cardId } },
+      UpdateExpression: "SET emailDeliveryStatus = :status",
+      ExpressionAttributeValues: { ":status": { S: status } },
+    }),
+  );
+}
 
 function parseDynamoImage(image: Record<string, any>): WarrantyRequestImage {
   const parseValue = (value: any): any => {
@@ -100,20 +154,45 @@ async function sendWarrantyEmail(payload: WarrantyRequestImage) {
 }
 
 export const handler = async (event: any) => {
+  const batchItemFailures: Array<{ itemIdentifier: string }> = [];
+
   for (const record of event.Records) {
-    if (record.eventName !== "INSERT" || !record.dynamodb?.NewImage) {
+    const sequenceNumber: string = record.dynamodb?.SequenceNumber ?? record.eventID ?? "";
+
+    // Fire on new INSERT, or on MODIFY where admin set resendEmail=true
+    const isInsert = record.eventName === "INSERT";
+    const isResend =
+      record.eventName === "MODIFY" &&
+      record.dynamodb?.NewImage?.resendEmail?.BOOL === true &&
+      record.dynamodb?.OldImage?.resendEmail?.BOOL !== true;
+
+    if ((!isInsert && !isResend) || !record.dynamodb?.NewImage) {
       continue;
     }
 
     const payload = parseDynamoImage(record.dynamodb.NewImage as Record<string, any>);
-    if (!payload.id || !payload.warrantyId) {
+    if (!payload.id || !payload.warrantyId || !payload.email) {
       continue;
     }
 
     try {
       await sendWarrantyEmail(payload);
+      await updateRequestEmailStatus(payload.id, "SENT", isResend);
+      await updateCardEmailStatus(payload.warrantyId, "SENT");
     } catch (error) {
-      console.error("Warranty email pipeline error", error);
+      console.error("Warranty email pipeline error", {
+        id: payload.id,
+        warrantyId: payload.warrantyId,
+        error,
+      });
+      try {
+        await updateRequestEmailStatus(payload.id, "FAILED", isResend);
+      } catch (updateError) {
+        console.error("Failed to mark emailDeliveryStatus=FAILED", updateError);
+      }
+      batchItemFailures.push({ itemIdentifier: sequenceNumber });
     }
   }
+
+  return { batchItemFailures };
 };

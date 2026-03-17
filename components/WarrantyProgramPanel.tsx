@@ -26,6 +26,7 @@ type WarrantyRequestItem = {
   endDate: string;
   status?: "NEW" | "REVIEWED" | "APPROVED" | "REJECTED" | "FULFILLED";
   emailDeliveryStatus?: "PENDING" | "SENT" | "FAILED";
+  resendEmail?: boolean;
   adminNotes?: string;
   createdAt?: string;
 };
@@ -154,6 +155,7 @@ export function WarrantyProgramPanel({ locale }: WarrantyProgramPanelProps) {
           extendOneYear: "تمديد سنة",
           markEmailSent: "تأكيد إرسال البريد",
           emailReady: "تم إنشاء رقم الضمان. سيتم إرسال البريد الإلكتروني تلقائيًا بعد ربط خدمة SES.",
+          resendEmailBtn: "إعادة إرسال البريد",
           valid: "الضمان ساري",
           expired: "الضمان منتهي",
           void: "الضمان ملغي",
@@ -192,6 +194,7 @@ export function WarrantyProgramPanel({ locale }: WarrantyProgramPanelProps) {
           markEmailSent: "Mark Email as Sent",
           emailReady:
             "Warranty ID has been generated. Email delivery is ready once AWS SES sender identity is configured.",
+          resendEmailBtn: "Resend Email",
           valid: "Warranty is Active",
           expired: "Warranty has Expired",
           void: "Warranty is Void",
@@ -421,6 +424,15 @@ export function WarrantyProgramPanel({ locale }: WarrantyProgramPanelProps) {
     await loadAdminData();
   };
 
+  const resendEmail = async (request: WarrantyRequestItem) => {
+    await client.models.WarrantyRequest.update({
+      id: request.id,
+      resendEmail: true,
+      emailDeliveryStatus: "PENDING",
+    } as any);
+    await loadAdminData();
+  };
+
   const extendCardOneYear = async (card: WarrantyCardItem) => {
     const newEndDate = addMonths(card.endDate, 12);
     await client.models.WarrantyCard.update({
@@ -636,9 +648,18 @@ export function WarrantyProgramPanel({ locale }: WarrantyProgramPanelProps) {
                         </td>
                         <td>{request.emailDeliveryStatus ?? "PENDING"}</td>
                         <td>
-                          <button type="button" onClick={() => markEmailSent(request)}>
-                            {copy.markEmailSent}
-                          </button>
+                          <div className="warranty-action-group">
+                            <button type="button" onClick={() => markEmailSent(request)}>
+                              {copy.markEmailSent}
+                            </button>
+                            <button
+                              type="button"
+                              className="warranty-resend-btn"
+                              onClick={() => resendEmail(request)}
+                            >
+                              {copy.resendEmailBtn}
+                            </button>
+                          </div>
                         </td>
                       </tr>
                     ))}

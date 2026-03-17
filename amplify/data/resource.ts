@@ -37,6 +37,7 @@ const schema = a.schema({
       status: a.enum(["NEW", "REVIEWED", "APPROVED", "REJECTED", "FULFILLED"]),
       emailDeliveryStatus: a.enum(["PENDING", "SENT", "FAILED"]),
       adminNotes: a.string(),
+      resendEmail: a.boolean(),
     })
     .authorization((allow) => [
       allow.publicApiKey().to(["create"]),
