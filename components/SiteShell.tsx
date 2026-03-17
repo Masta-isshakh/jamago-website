@@ -147,7 +147,10 @@ export function SiteShell({ locale, children }: SiteShellProps) {
             >
               <div className="mobile-drawer-header">
                 <Link href={withLocale(locale)} className="mobile-drawer-brand" onClick={() => setMobileMenuOpen(false)}>
-                  <span className="mobile-drawer-brand-mark">J</span>
+                  <span className="mobile-drawer-brand-mark" aria-hidden="true">
+                    <span className="mobile-drawer-brand-stroke one" />
+                    <span className="mobile-drawer-brand-stroke two" />
+                  </span>
                 </Link>
                 <button
                   type="button"
@@ -160,6 +163,7 @@ export function SiteShell({ locale, children }: SiteShellProps) {
               </div>
 
               <div className="mobile-drawer-search-wrap">
+                <span className="mobile-drawer-search-icon" aria-hidden="true">⌕</span>
                 <input
                   className="mobile-drawer-search"
                   type="text"
