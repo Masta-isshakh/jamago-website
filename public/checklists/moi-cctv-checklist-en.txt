@@ -1,0 +1,12 @@
+MOI CCTV Readiness Checklist (Doha)
+
+1) Site survey completed with area map and camera points.
+2) Sector requirements reviewed and translated into design scope.
+3) Camera schedule prepared (model, lens, location, use-case).
+4) Storage retention estimate completed and documented.
+5) Network and PoE capacity plan finalized.
+6) NVR/VMS architecture and user permission matrix prepared.
+7) Cabling, rack, and power backup plan confirmed.
+8) Commissioning and test checklist approved.
+9) Preventive maintenance and SLA response scope defined.
+10) Handover pack prepared (as-built docs, training, and support contacts).

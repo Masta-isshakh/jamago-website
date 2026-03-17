@@ -1,0 +1,12 @@
+<svg width="1200" height="700" viewBox="0 0 1200 700" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1200" height="700" fill="#0E1C2E"/>
+  <rect x="80" y="90" width="1040" height="520" rx="18" fill="#132A42"/>
+  <rect x="140" y="160" width="280" height="180" rx="12" fill="#1F4060"/>
+  <rect x="460" y="160" width="280" height="180" rx="12" fill="#1F4060"/>
+  <rect x="780" y="160" width="280" height="180" rx="12" fill="#1F4060"/>
+  <rect x="140" y="380" width="920" height="160" rx="12" fill="#274E77"/>
+  <circle cx="210" cy="470" r="30" fill="#4CC9F0"/>
+  <circle cx="330" cy="470" r="30" fill="#4CC9F0"/>
+  <circle cx="450" cy="470" r="30" fill="#4CC9F0"/>
+  <text x="140" y="135" fill="#A8DADC" font-size="28" font-family="Arial">Retail Control Room Upgrade</text>
+</svg>

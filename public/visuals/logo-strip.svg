@@ -1,0 +1,13 @@
+<svg width="1100" height="140" viewBox="0 0 1100 140" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1100" height="140" rx="20" fill="#EDF5FF"/>
+  <rect x="50" y="38" width="160" height="64" rx="10" fill="#CFE2F7"/>
+  <rect x="250" y="38" width="160" height="64" rx="10" fill="#CFE2F7"/>
+  <rect x="450" y="38" width="160" height="64" rx="10" fill="#CFE2F7"/>
+  <rect x="650" y="38" width="160" height="64" rx="10" fill="#CFE2F7"/>
+  <rect x="850" y="38" width="200" height="64" rx="10" fill="#CFE2F7"/>
+  <text x="78" y="77" fill="#19416A" font-size="20" font-family="Arial">Client A</text>
+  <text x="278" y="77" fill="#19416A" font-size="20" font-family="Arial">Client B</text>
+  <text x="478" y="77" fill="#19416A" font-size="20" font-family="Arial">Client C</text>
+  <text x="678" y="77" fill="#19416A" font-size="20" font-family="Arial">ISO/IEC</text>
+  <text x="888" y="77" fill="#19416A" font-size="20" font-family="Arial">Warranty 2Y</text>
+</svg>

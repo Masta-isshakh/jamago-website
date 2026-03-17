@@ -1,0 +1,15 @@
+<svg width="1200" height="700" viewBox="0 0 1200 700" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1200" height="700" fill="#F2F8FF"/>
+  <rect x="120" y="100" width="960" height="500" rx="20" fill="#FFFFFF" stroke="#CDE1F8" stroke-width="4"/>
+  <rect x="220" y="190" width="760" height="320" rx="10" fill="#EEF5FD"/>
+  <circle cx="260" cy="220" r="16" fill="#0B5CAB"/>
+  <circle cx="940" cy="220" r="16" fill="#0B5CAB"/>
+  <circle cx="260" cy="480" r="16" fill="#0B5CAB"/>
+  <circle cx="940" cy="480" r="16" fill="#0B5CAB"/>
+  <path d="M260 220L470 330" stroke="#0B5CAB" stroke-width="4" stroke-dasharray="9 9"/>
+  <path d="M940 220L730 330" stroke="#0B5CAB" stroke-width="4" stroke-dasharray="9 9"/>
+  <path d="M260 480L470 370" stroke="#0B5CAB" stroke-width="4" stroke-dasharray="9 9"/>
+  <path d="M940 480L730 370" stroke="#0B5CAB" stroke-width="4" stroke-dasharray="9 9"/>
+  <rect x="505" y="310" width="190" height="80" rx="10" fill="#12B5CB"/>
+  <text x="160" y="150" fill="#16314F" font-size="28" font-family="Arial">Camera Coverage Planner (Basic)</text>
+</svg>

@@ -1,0 +1,11 @@
+<svg width="1200" height="700" viewBox="0 0 1200 700" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1200" height="700" fill="#F5F7FA"/>
+  <rect x="120" y="120" width="960" height="460" rx="18" fill="#E6EEF5"/>
+  <path d="M250 460L600 210L950 460V540H250V460Z" fill="#6B7A8F"/>
+  <rect x="560" y="430" width="80" height="110" fill="#D8DEE6"/>
+  <circle cx="340" cy="360" r="20" fill="#1F4060"/>
+  <circle cx="860" cy="360" r="20" fill="#1F4060"/>
+  <rect x="310" y="300" width="60" height="30" rx="8" fill="#4CC9F0"/>
+  <rect x="830" y="300" width="60" height="30" rx="8" fill="#4CC9F0"/>
+  <text x="140" y="180" fill="#1A2C42" font-size="28" font-family="Arial">Villa Smart Security Package</text>
+</svg>
